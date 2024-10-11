@@ -4,5 +4,8 @@
   remote_user: root
 
   tasks:
-    - name: Ping the target machine
-      ansible.builtin.ping:
+    - name: Download the repository
+      ansible.builtin.git:
+        repo: 'https://github.com/e-mission/e-mission-server'
+        dest: ~/e-mission-server
+        version: 593e61c0cec1cc9fbbdccdc463cd7d122fa68f7a
