@@ -1,0 +1,8 @@
+---
+- hosts: e-mission-server
+  become: true
+  remote_user: root
+
+  tasks:
+    - name: Ping the target machine
+      ansible.builtin.ping:
