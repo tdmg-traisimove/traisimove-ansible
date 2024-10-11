@@ -1,5 +1,6 @@
 ---
-- hosts: e-mission-server
+- name: Configure OpenPath server
+  hosts: e-mission-server
   become: true
   remote_user: root
 
