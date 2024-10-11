@@ -10,7 +10,7 @@ pip install -r requirements.txt
 2. Set a `hosts.ini` file (see [hosts.example.ini](hosts.example.ini))
 ```
 # hosts.ini
-[e-mission-server]
+[openpath]
 example.com # Change with the address to the server
 ```
 
