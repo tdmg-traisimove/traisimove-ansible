@@ -65,3 +65,18 @@
         repo: 'https://github.com/e-mission/e-mission-server'
         dest: ~/e-mission-server
         version: 593e61c0cec1cc9fbbdccdc463cd7d122fa68f7a
+
+    - name: Install and setup Miniconda
+      ansible.builtin.shell:
+        cmd: "source setup/setup_conda.sh Linux-x86_64"
+        chdir: ~/e-mission-server
+        creates: ~/miniconda-23.5.2
+      args:
+        executable: /bin/bash
+    
+    - name: Setup e-mission-server
+      ansible.builtin.shell:
+        cmd: "source setup/activate.sh && source setup/setup.sh"
+        chdir: ~/e-mission-server
+      args:
+        executable: /bin/bash
