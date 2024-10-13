@@ -8,8 +8,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=root
-ExecStart=cd /roo/e-mission-server && source /root/e-mission-server/setup/activate.sh && /root/e-mission-server/e-mission-py.bash /root/e-mission-server/emission/net/api/cfc_webapp.py
-Restart=always
+ExecStart=/root/start_e-mission-server.sh
 
 [Install]
 WantedBy=multi-user.target

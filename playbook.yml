@@ -82,6 +82,7 @@
         dest: ~/e-mission-server
         version: 593e61c0cec1cc9fbbdccdc463cd7d122fa68f7a
 
+
     - name: Install and setup Miniconda
       ansible.builtin.shell:
         cmd: "source setup/setup_conda.sh Linux-x86_64"
@@ -96,6 +97,14 @@
         chdir: ~/e-mission-server
       args:
         executable: /bin/bash
+
+    - name: Copy start_e-mission-server.sh
+      ansible.builtin.copy:
+        src: files/start_e-mission-server.sh
+        dest: /root/start_e-mission-server.sh
+        mode: '700'
+      notify:
+        - Restart e-mission-server
 
     - name: Deploy e-mission-server service
       ansible.builtin.template:
