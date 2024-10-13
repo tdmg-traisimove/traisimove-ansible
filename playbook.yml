@@ -14,6 +14,12 @@
         name: e-mission-server
         state: restarted
 
+
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
   tasks:
     - name: Install MongoDB
       block:
@@ -99,3 +105,26 @@
       notify:
         - Reload systemd
         - Restart e-mission-server
+
+    - name: Setup nginx
+      block:
+        - name: Install nginx
+          ansible.builtin.package:
+            name: nginx
+            state: present
+
+        - name: Deploy nginx configuration
+          ansible.builtin.template:
+            src: "files/e-mission-server.nginx.j2"
+            dest: "/etc/nginx/sites-available/e-mission-server"
+            mode: '400'
+          notify:
+            - Restart nginx
+
+        - name: Create symbolic link for Nginx site
+          ansible.builtin.file:
+            src: /etc/nginx/sites-available/e-mission-server
+            dest: /etc/nginx/sites-enabled/e-mission-server
+            state: link
+          notify:
+            - Restart nginx
