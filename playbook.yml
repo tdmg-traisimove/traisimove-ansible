@@ -4,6 +4,16 @@
   become: true
   remote_user: root
 
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+        
+    - name: Restart e-mission-server
+      ansible.builtin.service:
+        name: e-mission-server
+        state: restarted
+
   tasks:
     - name: Install MongoDB
       block:
@@ -80,3 +90,12 @@
         chdir: ~/e-mission-server
       args:
         executable: /bin/bash
+
+    - name: Deploy e-mission-server service
+      ansible.builtin.template:
+        src: "files/e-mission-server.service"
+        dest: "/etc/systemd/system/e-mission-server.service"
+        mode: '400'
+      notify:
+        - Reload systemd
+        - Restart e-mission-server
