@@ -68,8 +68,6 @@
           ansible.builtin.package:
             name: mongodb-org
             state: present
-          notify:
-            - Restart MongoDB
 
         - name: Start MongoDB
           ansible.builtin.service:
