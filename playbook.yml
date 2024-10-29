@@ -106,6 +106,20 @@
         - Reload systemd
         - Restart e-mission-server
 
+    - name: Setup hourly analysis
+      block:
+        - name: Copy start_analysis.sh
+          ansible.builtin.copy:
+            src: files/start_analysis.sh
+            dest: /root/start_analysis.sh
+            mode: '700'
+
+        - name: Setup hourly analysis cron job
+          ansible.builtin.cron:
+            name: "Start hourly analysis"
+            minute: "0"
+            job: "/root/start_analysis.sh"
+
     - name: Enable and configure UFW
       block:
         - name: Enable UFW
