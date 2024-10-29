@@ -123,12 +123,31 @@
           ansible.builtin.package:
             name: nginx
             state: present
+        
+        - name: Check if the certificate exits (1)
+          stat:
+            path: "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem"
+          register: certificate_check
 
-        - name: Deploy nginx configuration
+        - name: Deploy nginx HTTP configuration
           ansible.builtin.template:
-            src: "files/e-mission-server.nginx.j2"
+            src: "files/e-mission-server.nginx.http.j2"
             dest: "/etc/nginx/sites-available/e-mission-server"
             mode: '400'
+          when: not certificate_check.stat.exists
+        
+        - name: Ensure nginx configuration is active for certbot
+          ansible.builtin.service:
+            name: nginx
+            state: restarted
+          when: not certificate_check.stat.exists
+
+        - name: Deploy nginx HTTP configuration
+          ansible.builtin.template:
+            src: "files/e-mission-server.nginx.http.j2"
+            dest: "/etc/nginx/sites-available/e-mission-server"
+            mode: '400'
+          when: not certificate_check.stat.exists
           notify:
             - Restart nginx
 
@@ -144,3 +163,41 @@
           community.general.ufw:
             rule: allow
             name: 'Nginx Full'
+
+    - name: Configure certbot
+      block:
+        - name: Install certbot
+          community.general.snap:
+            state: present
+            classic: true
+            name:
+              - certbot
+
+        - name: Create symbolic link for certbot
+          ansible.builtin.file:
+            src: /snap/bin/certbot
+            dest: /usr/bin/certbot
+            state: link
+
+        - name: Install certificates
+          ansible.builtin.command:
+            cmd: "certbot certonly --nginx --non-interactive --agree-tos -m {{ admin_email }} --domain {{ inventory_hostname }}"
+            creates: "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem"
+          notify:
+            - Restart systemd
+            - Restart nginx
+
+        - name: Check if the certificate exits (2)
+          stat:
+            path: "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem"
+          register: certificate_check
+
+        - name: Deploy nginx HTTPS configuration
+          ansible.builtin.template:
+            src: "files/e-mission-server.nginx.https.j2"
+            dest: "/etc/nginx/sites-available/e-mission-server"
+            mode: '400'
+          when: certificate_check.stat.exists
+          notify:
+            - Restart nginx
+

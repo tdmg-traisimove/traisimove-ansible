@@ -11,7 +11,9 @@ pip install -r requirements.txt
 ```
 # hosts.ini
 [openpath]
-example.com # Change with the address to the server
+# Change 'example.com' with the address to the server.
+# Change 'test@example.com' with the email address of the admin (used by certbot).
+example.com admin_email=test@example.com
 ```
 
 3. Run Ansible
