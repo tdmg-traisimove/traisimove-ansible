@@ -8,7 +8,7 @@
     - name: Reload systemd
       ansible.builtin.systemd:
         daemon_reload: true
-        
+
     - name: Restart e-mission-server
       ansible.builtin.service:
         name: e-mission-server
@@ -83,7 +83,7 @@
 
     - name: Install and setup Miniconda
       ansible.builtin.shell:
-        cmd: "yes | source setup/setup_conda.sh Linux-x86_64 && source setup/setup.sh" 
+        cmd: "yes | source setup/setup_conda.sh Linux-x86_64 && source setup/setup.sh"
         chdir: ~/e-mission-server
         creates: ~/miniconda-23.5.2
       args:
@@ -120,6 +120,20 @@
             minute: "0"
             job: "/root/start_analysis.sh"
 
+    - name: Setup hourly silent ios push
+      block:
+        - name: Copy start_silent_ios_push.sh
+          ansible.builtin.copy:
+            src: files/start_silent_ios_push.sh
+            dest: /root/start_silent_ios_push.sh
+            mode: '700'
+
+        - name: Setup hourly silent ios push cron job
+          ansible.builtin.cron:
+            name: "Start silent ios push"
+            minute: "30"
+            job: "/root/start_silent_ios_push.sh"
+
     - name: Enable and configure UFW
       block:
         - name: Enable UFW
@@ -137,7 +151,7 @@
           ansible.builtin.package:
             name: nginx
             state: present
-        
+
         - name: Check if the certificate exits (1)
           stat:
             path: "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem"
@@ -149,7 +163,7 @@
             dest: "/etc/nginx/sites-available/e-mission-server"
             mode: '400'
           when: not certificate_check.stat.exists
-        
+
         - name: Ensure nginx configuration is active for certbot
           ansible.builtin.service:
             name: nginx
