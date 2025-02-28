@@ -1,6 +1,6 @@
 ---
-- name: Configure OpenPath server
-  hosts: openpath
+- name: Configure Traisi Move server
+  hosts: traisimove
   become: true
   remote_user: root
   gather_facts: false
