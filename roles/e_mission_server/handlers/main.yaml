@@ -14,8 +14,10 @@
 
 - name: Install and setup Miniconda
   ansible.builtin.shell:
-    cmd: "set -o pipefail && yes | source setup/setup_conda.sh Linux-x86_64 && source setup/setup.sh"
+    cmd: "source setup/setup_conda.sh Linux-x86_64 && source setup/setup.sh"
     chdir: ~/e-mission-server
     creates: ~/miniconda-23.5.2
   args:
     executable: /bin/bash
+  environment:
+    CONDA_ALWAYS_YES: true
