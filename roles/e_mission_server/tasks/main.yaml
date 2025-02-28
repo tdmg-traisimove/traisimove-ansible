@@ -3,15 +3,11 @@
     repo: 'https://github.com/e-mission/e-mission-server'
     dest: ~/e-mission-server
     version: b15fcb983c6b2f40e548f53550d417829a2f08fc
-
-
-- name: Install and setup Miniconda
-  ansible.builtin.shell:
-    cmd: "set -o pipefail && yes | source setup/setup_conda.sh Linux-x86_64 && source setup/setup.sh"
-    chdir: ~/e-mission-server
-    creates: ~/miniconda-23.5.2
-  args:
-    executable: /bin/bash
+  changed_when: true
+  notify:
+    - Delete Miniconda # Otherwise the installation will fail
+    - Install and setup Miniconda
+    - Restart e-mission-server
 
 - name: Copy start_e-mission-server.sh
   ansible.builtin.copy:
