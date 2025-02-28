@@ -11,7 +11,7 @@
         name: nginx
       vars:
         # role_dir would resolve to nginx directory
-        nginx_conf_file: "{{ playbook_dir }}/roles/frontend/templates/nginx_conf.j2"
+        nginx_conf_file: "{{ playbook_dir }}/templates/nginx_conf.j2"
         nginx_domain_name: "{{ inventory_hostname }}"
 
     - name: Setup mongodb
