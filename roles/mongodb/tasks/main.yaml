@@ -35,13 +35,10 @@
     mode: '400'
     state: present
 
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-
 - name: Install MongoDB
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: mongodb-org
+    update_cache: true
     state: present
 
 - name: Start MongoDB
