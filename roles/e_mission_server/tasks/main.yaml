@@ -3,7 +3,6 @@
     repo: 'https://github.com/e-mission/e-mission-server'
     dest: ~/e-mission-server
     version: b15fcb983c6b2f40e548f53550d417829a2f08fc
-  changed_when: true
   notify:
     - Delete Miniconda # Otherwise the installation will fail
     - Install and setup Miniconda
