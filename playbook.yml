@@ -3,6 +3,7 @@
   hosts: openpath
   become: true
   remote_user: root
+  gather_facts: false
 
   tasks:
     - name: Setup nginx
