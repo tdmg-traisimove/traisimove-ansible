@@ -4,16 +4,6 @@
   become: true
   remote_user: root
 
-  handlers:
-    - name: Reload systemd
-      ansible.builtin.systemd:
-        daemon_reload: true
-
-    - name: Restart e-mission-server
-      ansible.builtin.service:
-        name: e-mission-server
-        state: restarted
-
   tasks:
     - name: Setup nginx
       ansible.builtin.include_role:
@@ -23,69 +13,13 @@
         nginx_conf_file: "{{ playbook_dir }}/roles/frontend/templates/nginx_conf.j2"
         nginx_domain_name: "{{ inventory_hostname }}"
 
-    - name: Setup nginx
+    - name: Setup mongodb
       ansible.builtin.include_role:
         name: mongodb
 
-    - name: Download the repository
-      ansible.builtin.git:
-        repo: 'https://github.com/e-mission/e-mission-server'
-        dest: ~/e-mission-server
-        version: b15fcb983c6b2f40e548f53550d417829a2f08fc
-
-
-    - name: Install and setup Miniconda
-      ansible.builtin.shell:
-        cmd: "yes | source setup/setup_conda.sh Linux-x86_64 && source setup/setup.sh"
-        chdir: ~/e-mission-server
-        creates: ~/miniconda-23.5.2
-      args:
-        executable: /bin/bash
-
-    - name: Copy start_e-mission-server.sh
-      ansible.builtin.copy:
-        src: files/start_e-mission-server.sh
-        dest: /root/start_e-mission-server.sh
-        mode: '700'
-      notify:
-        - Restart e-mission-server
-
-    - name: Deploy e-mission-server service
-      ansible.builtin.template:
-        src: "files/e-mission-server.service"
-        dest: "/etc/systemd/system/e-mission-server.service"
-        mode: '400'
-      notify:
-        - Reload systemd
-        - Restart e-mission-server
-
-    - name: Setup hourly analysis
-      block:
-        - name: Copy start_analysis.sh
-          ansible.builtin.copy:
-            src: files/start_analysis.sh
-            dest: /root/start_analysis.sh
-            mode: '700'
-
-        - name: Setup hourly analysis cron job
-          ansible.builtin.cron:
-            name: "Start hourly analysis"
-            minute: "0"
-            job: "/root/start_analysis.sh"
-
-    - name: Setup hourly silent ios push
-      block:
-        - name: Copy start_silent_ios_push.sh
-          ansible.builtin.copy:
-            src: files/start_silent_ios_push.sh
-            dest: /root/start_silent_ios_push.sh
-            mode: '700'
-
-        - name: Setup hourly silent ios push cron job
-          ansible.builtin.cron:
-            name: "Start silent ios push"
-            minute: "30"
-            job: "/root/start_silent_ios_push.sh"
+    - name: Setup e-mission-server
+      ansible.builtin.include_role:
+        name: e_mission_server
 
     - name: Enable and configure UFW
       block:
