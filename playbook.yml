@@ -14,13 +14,15 @@
         name: e-mission-server
         state: restarted
 
-
-    - name: Restart nginx
-      ansible.builtin.service:
-        name: nginx
-        state: restarted
-
   tasks:
+    - name: Setup nginx
+      ansible.builtin.include_role:
+        name: nginx
+      vars:
+        # role_dir would resolve to nginx directory
+        nginx_conf_file: "{{ playbook_dir }}/roles/frontend/templates/nginx_conf.j2"
+        nginx_domain_name: "{{ inventory_hostname }}"
+
     - name: Install MongoDB
       block:
         - name: Install dependencies
@@ -144,88 +146,3 @@
           community.general.ufw:
             rule: allow
             port: 22
-
-    - name: Setup nginx
-      block:
-        - name: Install nginx
-          ansible.builtin.package:
-            name: nginx
-            state: present
-
-        - name: Check if the certificate exits (1)
-          stat:
-            path: "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem"
-          register: certificate_check
-
-        - name: Deploy nginx HTTP configuration
-          ansible.builtin.template:
-            src: "files/e-mission-server.nginx.http.j2"
-            dest: "/etc/nginx/sites-available/e-mission-server"
-            mode: '400'
-          when: not certificate_check.stat.exists
-
-        - name: Ensure nginx configuration is active for certbot
-          ansible.builtin.service:
-            name: nginx
-            state: restarted
-          when: not certificate_check.stat.exists
-
-        - name: Deploy nginx HTTP configuration
-          ansible.builtin.template:
-            src: "files/e-mission-server.nginx.http.j2"
-            dest: "/etc/nginx/sites-available/e-mission-server"
-            mode: '400'
-          when: not certificate_check.stat.exists
-          notify:
-            - Restart nginx
-
-        - name: Create symbolic link for Nginx site
-          ansible.builtin.file:
-            src: /etc/nginx/sites-available/e-mission-server
-            dest: /etc/nginx/sites-enabled/e-mission-server
-            state: link
-          notify:
-            - Restart nginx
-
-        - name: Allow Nginx Full
-          community.general.ufw:
-            rule: allow
-            name: 'Nginx Full'
-
-    - name: Configure certbot
-      block:
-        - name: Install certbot
-          community.general.snap:
-            state: present
-            classic: true
-            name:
-              - certbot
-
-        - name: Create symbolic link for certbot
-          ansible.builtin.file:
-            src: /snap/bin/certbot
-            dest: /usr/bin/certbot
-            state: link
-
-        - name: Install certificates
-          ansible.builtin.command:
-            cmd: "certbot certonly --nginx --non-interactive --agree-tos -m {{ admin_email }} --domain {{ inventory_hostname }}"
-            creates: "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem"
-          notify:
-            - Restart systemd
-            - Restart nginx
-
-        - name: Check if the certificate exits (2)
-          stat:
-            path: "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem"
-          register: certificate_check
-
-        - name: Deploy nginx HTTPS configuration
-          ansible.builtin.template:
-            src: "files/e-mission-server.nginx.https.j2"
-            dest: "/etc/nginx/sites-available/e-mission-server"
-            mode: '400'
-          when: certificate_check.stat.exists
-          notify:
-            - Restart nginx
-
