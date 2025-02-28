@@ -1,12 +1,3 @@
-- name: Reload systemd
-  ansible.builtin.systemd:
-    daemon_reload: true
-
-- name: Restart e-mission-server
-  ansible.builtin.service:
-    name: e-mission-server
-    state: restarted
-
 - name: Delete Miniconda
   ansible.builtin.file:
     path: "~/miniconda-23.5.2"
@@ -21,3 +12,12 @@
     executable: /bin/bash
   environment:
     CONDA_ALWAYS_YES: true
+
+- name: Restart e-mission-server
+  ansible.builtin.service:
+    name: e-mission-server
+    state: restarted
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
