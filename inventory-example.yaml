@@ -1,0 +1,4 @@
+traisimove:
+  hosts:
+    example.com:
+      certbot_email: "test@example.com"

@@ -2,4 +2,4 @@
 .vscode
 venv
 
-hosts.ini
+inventory.yaml

@@ -7,18 +7,20 @@ Ansible project to deploy [OpenPath](https://github.com/e-mission/e-mission-serv
 pip install -r requirements.txt
 ```
 
-2. Set a `hosts.ini` file (see [hosts.example.ini](hosts.example.ini))
-```
-# hosts.ini
-[openpath]
-# Change 'example.com' with the address to the server.
-# Change 'test@example.com' with the email address of the admin (used by certbot).
-example.com certbot_email=test@example.com
+2. Set a `inventory.yaml` file (see [inventory-example.yaml](./inventory-example.yaml))
+``` yaml
+# inventory.yaml
+traisimove:
+  hosts:
+    # Change 'example.com' with the address to the server.
+    example.com:
+      # Change 'test@example.com' with the email address of the admin (used by certbot).
+      certbot_email: "test@example.com"
 ```
 
 3. Run Ansible
 ``` shell
-ansible-playbook -i hosts.ini playbook.yml
+ansible-playbook -i inventory.yaml playbook.yml
 ```
 See [Troubleshooting](#troubleshooting) in case of problem.
 
