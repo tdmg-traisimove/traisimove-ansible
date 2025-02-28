@@ -2,7 +2,7 @@
   ansible.builtin.git:
     repo: 'https://github.com/e-mission/e-mission-server'
     dest: ~/e-mission-server
-    version: b15fcb983c6b2f40e548f53550d417829a2f08fc
+    version: a5857752f49fee8c6d9e592cc8fa4eb80f50a4fc
   notify:
     - Delete Miniconda # Otherwise the installation will fail
     - Install and setup Miniconda
