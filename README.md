@@ -13,7 +13,7 @@ pip install -r requirements.txt
 [openpath]
 # Change 'example.com' with the address to the server.
 # Change 'test@example.com' with the email address of the admin (used by certbot).
-example.com admin_email=test@example.com
+example.com certbot_email=test@example.com
 ```
 
 3. Run Ansible
@@ -23,7 +23,7 @@ ansible-playbook -i hosts.ini playbook.yml
 See [Troubleshooting](#troubleshooting) in case of problem.
 
 # Troubleshooting
-## Error on `Install and setup Miniconda` 
+## Error on `Install and setup Miniconda`
 That task takes takes a lot of ressources and often crashes. If it happens:
 1. Manually delete `~/miniconda-23.5.2`
 ```shell
