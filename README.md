@@ -2,6 +2,8 @@
 Ansible project to deploy [OpenPath](https://github.com/e-mission/e-mission-server)
 
 # Launch
+**Note: This playbook only works on Ubuntu.**
+
 1. Install Ansible
 ``` shell
 pip install -r requirements.txt
@@ -16,6 +18,8 @@ traisimove:
     example.com:
       # Change 'test@example.com' with the email address of the admin (used by certbot).
       certbot_email: "test@example.com"
+      # Change 'oracular' with the Ubuntu version codename, such as 'oracular' or 'focal'
+      ubuntu_codename: "oracular"
 ```
 
 3. Run Ansible

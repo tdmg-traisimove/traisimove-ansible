@@ -21,6 +21,10 @@
       ansible.builtin.include_role:
         name: e_mission_server
 
+    - name: Setup admin dashboard
+      ansible.builtin.include_role:
+        name: op_admin_dashboard
+
     - name: Enable and configure UFW
       block:
         - name: Enable UFW
