@@ -1,0 +1,2 @@
+op_admin_dashboard_path: "~/traisimove-admin-dashboard"
+op_admin_dashboard_docker_compose_path: "{{ op_admin_dashboard_path }}/docker-compose.yaml"

@@ -1,0 +1,34 @@
+services:
+{% for study in admin_dashboards.studies %}
+  {{ study.name }}:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        SERVER_IMAGE_TAG: ${SERVER_IMAGE_TAG}
+    image: e-mission/opdash:0.0.1
+    ports:
+      - "{{ study.port }}:8050"
+    environment:
+      DASH_DEBUG_MODE: "False"
+      DASH_SERVER_PORT: 8050
+      DB_HOST: "host.docker.internal:27017"
+      WEB_SERVER_HOST: 0.0.0.0
+      SERVER_BRANCH: master
+      CONFIG_PATH: "https://raw.githubusercontent.com/tdmg-traisimove/traisimove-deploy-configs/main/configs/"
+      STUDY_CONFIG: "{{ study.name }}"
+      AUTH_TYPE: "basic" # the other option is cognito
+      COGNITO_CLIENT_ID: ''
+      COGNITO_CLIENT_SECRET: ''
+      COGNITO_REDIRECT_URL: ''
+      COGNITO_TOKEN_ENDPOINT: ''
+      COGNITO_USER_POOL_ID: ''
+      COGNITO_REGION: ''
+      COGNITO_AUTH_URL: ''
+      REACT_VERSION: "18.2.0"
+    deploy:
+      restart_policy:
+        condition: on-failure
+    #extra_hosts:
+      - "host.docker.internal:host-gateway"
+{% endfor %}

@@ -1,0 +1,5 @@
+VALID_USERNAME_PASSWORD_PAIRS = {
+{% for user in admin_dashboards.users %}
+    "{{ user.name }}": "{{ user.password }}",
+{% endfor %}
+}

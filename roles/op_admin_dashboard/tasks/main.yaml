@@ -1,3 +1,29 @@
 - name: Setup Docker
   ansible.builtin.include_role:
     name: docker
+
+- name: Download the repository
+  ansible.builtin.git:
+    repo: 'https://github.com/tdmg-traisimove/traisimove-admin-dashboard'
+    dest: "{{ op_admin_dashboard_path }}"
+    version: 4c2d5c1276536c4f16e9a1bb9552a1baf6f86b0a
+
+- name: Copy config.py
+  ansible.builtin.template:
+    src: "config.py.j2"
+    dest: "{{ op_admin_dashboard_path }}/config.py"
+    mode: "400"
+
+- name: Copy Docker Compose file
+  ansible.builtin.template:
+    src: docker-compose.yaml.j2
+    dest: "{{ op_admin_dashboard_docker_compose_path }}"
+    mode: "400"
+  environment:
+    SERVER_IMAGE_TAG: 2025-02-27--40-12
+
+- name: Deploy containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ op_admin_dashboard_path }}"
+    files:
+      - "{{ op_admin_dashboard_docker_compose_path }}"

@@ -3,3 +3,16 @@ traisimove:
     example.com:
       certbot_email: "test@example.com"
       ubuntu_codename: "oracular"
+      admin_dashboards:
+        studies:
+          - name: "test-study"
+            port: 6000
+          - name: "test-study-2"
+            port: 6001
+        # In the current way of things, having different users for each study
+        # would require to build a different Docker image for each study.
+        users:
+          - name: "name"
+            password: "password"
+          - name: "name2"
+            password: "password2"
