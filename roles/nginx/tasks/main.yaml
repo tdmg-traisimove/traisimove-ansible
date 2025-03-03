@@ -3,11 +3,6 @@
     name: nginx
     state: present
 
-- name: Allow Nginx Full
-  community.general.ufw:
-    rule: allow
-    name: "Nginx Full"
-
 - name: Check if the certificate exits (1)
   ansible.builtin.stat:
     path: "/etc/letsencrypt/live/{{ nginx_domain_name }}/fullchain.pem"
