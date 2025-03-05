@@ -10,7 +10,22 @@ server {
 
 {% for study in admin_dashboards.studies %}
     location /dashboards/{{ study.name }} {
-        proxy_pass http://127.0.0.1:{{ study.port }};
+        rewrite ^/dashboards/{{ study.name }}(/.*)$ $1 break;
+        proxy_pass http://127.0.0.1:{{ study.port }}/;
+        proxy_pass_header Content-Type;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_cookie_path / "/; Secure; HttpOnly; SameSite=strict";
+        client_max_body_size 1G;
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 {% endfor %}
 }

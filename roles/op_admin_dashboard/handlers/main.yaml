@@ -1,0 +1,6 @@
+- name: Deploy containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ op_admin_dashboard_path }}"
+    files:
+      - "{{ op_admin_dashboard_docker_compose_path }}"
+    build: always

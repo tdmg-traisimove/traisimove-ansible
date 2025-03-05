@@ -6,7 +6,10 @@
   ansible.builtin.git:
     repo: 'https://github.com/tdmg-traisimove/traisimove-admin-dashboard'
     dest: "{{ op_admin_dashboard_path }}"
-    version: 4c2d5c1276536c4f16e9a1bb9552a1baf6f86b0a
+    version: da070b3b94485010575d11c24f8560d62051184f
+  changed_when: true
+  notify:
+   - Deploy containers
 
 - name: Copy config.py
   ansible.builtin.template:
@@ -21,9 +24,5 @@
     mode: "400"
   environment:
     SERVER_IMAGE_TAG: 2025-02-27--40-12
-
-- name: Deploy containers
-  community.docker.docker_compose_v2:
-    project_src: "{{ op_admin_dashboard_path }}"
-    files:
-      - "{{ op_admin_dashboard_docker_compose_path }}"
+  notify:
+   - Deploy containers
