@@ -1,7 +1,7 @@
 traisimove:
   hosts:
-    example.com:
-      certbot_email: "test@example.com"
+    openpath.utoronto.dazadillon.io:
+      certbot_email: "io@dazadillon.io"
       ubuntu_codename: "oracular"
       admin_dashboards:
         studies:
@@ -9,8 +9,6 @@ traisimove:
             port: 6000
           - name: "test-study-2"
             port: 6001
-        # In the current way of things, having different users for each study
-        # would require to build a different Docker image for each study.
         users:
           - name: "name"
             password: "password"
