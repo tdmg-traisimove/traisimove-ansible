@@ -35,13 +35,18 @@
     mode: '400'
     state: present
 
+- name: Set config
+  ansible.builtin.template:
+    src: "mongod.conf.j2"
+    dest: "/etc/mongod.conf"
+    mode: "444"
+  notify:
+    - Restart MongoDB
+
 - name: Install MongoDB
   ansible.builtin.apt:
     name: mongodb-org
     update_cache: true
     state: present
-
-- name: Start MongoDB
-  ansible.builtin.service:
-    name: mongod
-    state: started
+  notify:
+    - Restart MongoDB
