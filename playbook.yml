@@ -3,7 +3,6 @@
   hosts: traisimove
   become: true
   remote_user: root
-  gather_facts: false
 
   tasks:
     - name: Configure firewall

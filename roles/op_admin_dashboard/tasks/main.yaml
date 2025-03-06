@@ -7,15 +7,23 @@
     repo: 'https://github.com/tdmg-traisimove/traisimove-admin-dashboard'
     dest: "{{ op_admin_dashboard_path }}"
     version: da070b3b94485010575d11c24f8560d62051184f
-  changed_when: true
   notify:
-   - Deploy containers
+    - Deploy containers
 
 - name: Copy config.py
   ansible.builtin.template:
     src: "config.py.j2"
     dest: "{{ op_admin_dashboard_path }}/config.py"
     mode: "400"
+
+- name: Get Docker gateway
+  ansible.builtin.command: "{% raw %} docker network inspect bridge -f '{{range .IPAM.Config}}{{.Gateway}}{{end}}' {% endraw %}"
+  register: docker_gateway_result
+  changed_when: (docker_gateway | default(None)) != docker_gateway_result.stdout
+
+- name: Set Docker gateway fact
+  ansible.builtin.set_fact:
+    docker_gateway: "{{ docker_gateway_result.stdout }}"
 
 - name: Copy Docker Compose file
   ansible.builtin.template:
@@ -25,4 +33,4 @@
   environment:
     SERVER_IMAGE_TAG: 2025-02-27--40-12
   notify:
-   - Deploy containers
+    - Deploy containers
