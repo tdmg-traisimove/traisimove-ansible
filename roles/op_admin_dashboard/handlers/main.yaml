@@ -4,3 +4,4 @@
     files:
       - "{{ op_admin_dashboard_docker_compose_path }}"
     build: always
+    remove_orphans: true
