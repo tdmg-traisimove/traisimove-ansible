@@ -71,6 +71,10 @@
         nginx_conf_file: "{{ playbook_dir }}/templates/nginx_conf.j2"
         nginx_domain_name: "{{ inventory_hostname }}"
 
+    - name: Setup Docker
+      ansible.builtin.include_role:
+        name: docker
+
     - name: Setup mongodb
       ansible.builtin.include_role:
         name: mongodb

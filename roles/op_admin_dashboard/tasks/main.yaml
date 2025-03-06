@@ -1,7 +1,3 @@
-- name: Setup Docker
-  ansible.builtin.include_role:
-    name: docker
-
 - name: Download the repository
   ansible.builtin.git:
     repo: 'https://github.com/tdmg-traisimove/traisimove-admin-dashboard'
