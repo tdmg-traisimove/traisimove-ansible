@@ -18,3 +18,12 @@
       - docker-compose-plugin
     update_cache: true
     state: present
+
+- name: Get Docker gateway
+  ansible.builtin.command: "{% raw %} docker network inspect bridge -f '{{range .IPAM.Config}}{{.Gateway}}{{end}}' {% endraw %}"
+  register: docker_gateway_result
+  changed_when: (docker_gateway | default(None)) != docker_gateway_result.stdout
+
+- name: Set Docker gateway fact
+  ansible.builtin.set_fact:
+    docker_gateway: "{{ docker_gateway_result.stdout }}"
