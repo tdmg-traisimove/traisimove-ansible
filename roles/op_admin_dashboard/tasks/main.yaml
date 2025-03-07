@@ -11,6 +11,8 @@
     src: "config.py.j2"
     dest: "{{ op_admin_dashboard_path }}/config.py"
     mode: "400"
+  notify:
+    - Deploy containers
 
 - name: Copy Docker Compose file
   ansible.builtin.template:
