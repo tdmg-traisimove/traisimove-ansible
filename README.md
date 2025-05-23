@@ -74,3 +74,11 @@ source setup/setup.sh
 3. Run Ansible again.
 
 If the task is still killed, then you'll have to increase the power of your server.
+
+## Study's config changes are not reflected in the dashboard
+The dashboard has currently no way know when a study's config has changed.
+For now, the only way to update the study's config it is to log on the server and rebuild the docker images:
+``` shell
+cd ~/traisimove-admin-dashboard
+docker compose up --build -d
+```
